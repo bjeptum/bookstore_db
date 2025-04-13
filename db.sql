@@ -2,7 +2,7 @@
 CREATE DATABASE IF NOT EXISTS bookstore;
 USE bookstore;
 
-- creating book table
+-- creating book table
 CREATE TABLE book (
     book_id INT PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(255) NOT NULL,
