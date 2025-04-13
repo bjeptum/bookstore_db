@@ -2,6 +2,41 @@
 CREATE DATABASE IF NOT EXISTS bookstore;
 USE bookstore;
 
+- creating book table
+CREATE TABLE book (
+    book_id INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(255) NOT NULL,
+    language_id INT,
+    publisher_id INT,
+    price DECIMAL(10,2),
+    stock INT,
+    FOREIGN KEY (language_id) REFERENCES book_language(language_id),
+    FOREIGN KEY (publisher_id) REFERENCES publisher(publisher_id)
+);
+
+CREATE TABLE author (
+    author_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE book_author (
+    book_id INT,
+    author_id INT,
+    PRIMARY KEY (book_id, author_id),
+    FOREIGN KEY (book_id) REFERENCES book(book_id),
+    FOREIGN KEY (author_id) REFERENCES author(author_id)
+);
+
+CREATE TABLE book_language (
+    language_id INT PRIMARY KEY AUTO_INCREMENT,
+    language_name VARCHAR(100)
+);
+
+CREATE TABLE publisher (
+    publisher_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255)
+);
+
 
 CREATE TABLE country (
     country_id INT PRIMARY KEY,
@@ -38,6 +73,70 @@ CREATE TABLE customer_address (
     FOREIGN KEY (address_id) REFERENCES address(address_id),
     FOREIGN KEY (status_id) REFERENCES address_status(status_id)
 );
+
+-- creating order tables
+CREATE TABLE cust_order (
+    order_id INT PRIMARY KEY AUTO_INCREMENT,
+    customer_id INT,
+    order_date DATETIME,
+    status_id VARCHAR(50),
+    FOREIGN KEY (customer_id) REFERENCES customer(customer_id)
+    FOREIGN KEY (status_id) REFERENCES order_status(status_id)
+);
+
+CREATE TABLE order_status (
+    status_id INT PRIMARY KEY,
+    status_name VARCHAR(50)
+);
+
+CREATE TABLE shipping_method (
+    method_id INT PRIMARY KEY,
+    method_name VARCHAR(50),
+    shipping_cost DECIMAL(10,2)
+);
+
+CREATE TABLE order_history(
+    order_history_id INT PRIMARY KEY AUTO_INCREMENT,
+    order_id INT,
+    status_id INT,
+    change_date DATETIME,
+    FOREIGN KEY (order_id) REFERENCES cust_order(order_id),
+    FOREIGN KEY (status_id) REFERENCES order_status(status_id)
+);
+
+CREATE TABLE order_line(
+    order_line_id INT PRIMARY KEY AUTO_INCREMENT,
+    order_id INT,
+    book_id INT,
+    quantity INT,
+    price DECIMAL(10,2),
+    FOREIGN KEY (order_id) REFERENCES cust_order(order_id),
+    FOREIGN KEY (book_id) REFERENCES book(book_id)
+);
+
+-- inserting values to the data
+INSERT INTO book_language (language_name) VALUES
+ ('English'), ('Spanish'), ('French');
+
+INSERT INTO publisher (name) VALUES
+ ('Penguin Random House'), 
+ ('HarperCollins'),
+ ('Simon & Schuster');
+
+INSERT INTO author (name) VALUES
+ ('J.K. Rowling'), 
+ ('George R.R. Martin'),
+ ('J.R.R. Tolkien');
+
+INSERT INTO book (title, language_id, publisher_id, price, stock) VALUES
+ ('Harry Potter and the Sorcerer\'s Stone', 1, 1, 19.99, 100),
+ ('A Game of Thrones', 1, 2, 29.99, 50),
+ ('The Hobbit', 1, 3, 15.99, 75);
+
+INSERT INTO book_author (book_id, author_id) VALUES
+ (1, 1), 
+ (2, 2), 
+ (3, 3);
 
 -- Insert into country
 INSERT INTO country (country_id, country_name) VALUES
@@ -80,61 +179,48 @@ INSERT INTO customer_address (customer_id, address_id, status_id) VALUES
 (5, 5, 1); -- Kenji, Tokyo, Home
 
 
--- creating the tables
-CREATE TABLE book (
-    book_id INT PRIMARY KEY AUTO_INCREMENT,
-    title VARCHAR(255) NOT NULL,
-    language_id INT,
-    publisher_id INT,
-    price DECIMAL(10,2),
-    stock INT,
-    FOREIGN KEY (language_id) REFERENCES book_language(language_id),
-    FOREIGN KEY (publisher_id) REFERENCES publisher(publisher_id)
-);
+-- Insert into order_status
+INSERT INTO order_status (status_id, status_name) VALUES
+(1, 'Pending'),
+(2, 'Shipped'),
+(3, 'Delivered'),
+(4, 'Cancelled');
+(5, 'Returned');
+(6, 'Refunded');
+(7, 'Processing');
+(8, 'On Hold');
+ );
 
-CREATE TABLE author (
-    author_id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(255) NOT NULL
-);
+-- Insert into shipping_method
+INSERT INTO shipping_method (method_id, method_name, shipping_cost) VALUES
+(1, 'Standard Shipping', 5.00),
+(2, 'Express Shipping', 15.00),
+(3, 'Overnight Shipping', 25.00);
+ );
 
-CREATE TABLE book_author (
-    book_id INT,
-    author_id INT,
-    PRIMARY KEY (book_id, author_id),
-    FOREIGN KEY (book_id) REFERENCES book(book_id),
-    FOREIGN KEY (author_id) REFERENCES author(author_id)
-);
+-- Insert into cust_order
+INSERT INTO cust_order (customer_id, order_date, status_id) VALUES
+(1, '2023-10-01 10:00:00', 1),
+(2, '2023-10-02 11:30:00', 2),
+(3, '2023-10-03 12:45:00', 3),
+(4, '2023-10-04 14:15:00', 4),
+(5, '2023-10-05 15:30:00', 5);
+ );
 
-CREATE TABLE book_language (
-    language_id INT PRIMARY KEY AUTO_INCREMENT,
-    language_name VARCHAR(100)
-);
+-- Insert into order_history
+INSERT INTO order_history (order_id, status_id, change_date) VALUES
+(1, 1, '2023-10-01 10:00:00'),
+(2, 2, '2023-10-02 11:30:00'),
+(3, 3, '2023-10-03 12:45:00'),
+(4, 4, '2023-10-04 14:15:00'),
+(5, 5, '2023-10-05 15:30:00');
+ );
 
-CREATE TABLE publisher (
-    publisher_id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(255)
-);
-
--- inserting values to the data
-INSERT INTO book_language (language_name) VALUES
- ('English'), ('Spanish'), ('French');
-
-INSERT INTO publisher (name) VALUES
- ('Penguin Random House'), 
- ('HarperCollins'),
- ('Simon & Schuster');
-
-INSERT INTO author (name) VALUES
- ('J.K. Rowling'), 
- ('George R.R. Martin'),
- ('J.R.R. Tolkien');
-
-INSERT INTO book (title, language_id, publisher_id, price, stock) VALUES
- ('Harry Potter and the Sorcerer\'s Stone', 1, 1, 19.99, 100),
- ('A Game of Thrones', 1, 2, 29.99, 50),
- ('The Hobbit', 1, 3, 15.99, 75);
-
-INSERT INTO book_author (book_id, author_id) VALUES
- (1, 1), 
- (2, 2), 
- (3, 3);
+-- Insert into order_line
+INSERT INTO order_line (order_id, book_id, quantity, price) VALUES
+(1, 1, 2, 39.98),
+(2, 2, 1, 29.99),
+(3, 3, 3, 47.97),
+(4, 4, 1, 15.99),
+(5, 5, 2, 59.98);
+ );
