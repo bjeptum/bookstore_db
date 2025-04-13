@@ -2,7 +2,7 @@
 
 -- creating the database
 CREATE DATABASE bookstore;
-USE BookstoreDB;
+USE bookstore;
 
 -- creating the tables
 CREATE TABLE book (
