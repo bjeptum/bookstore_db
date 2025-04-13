@@ -2,7 +2,7 @@
 CREATE DATABASE IF NOT EXISTS bookstore;
 USE bookstore;
 
--- create book  languages
+-- create book languages
 CREATE TABLE book_language (
     language_id INT PRIMARY KEY AUTO_INCREMENT,
     language_name VARCHAR(100)
@@ -11,7 +11,7 @@ CREATE TABLE book_language (
 -- create publishers table
 CREATE TABLE publisher (
     publisher_id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(255)
+    publisher_name VARCHAR(255)
 );
 
 -- creating book table
@@ -29,7 +29,7 @@ CREATE TABLE book (
 -- create author
 CREATE TABLE author (
     author_id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(255) NOT NULL
+    author_name VARCHAR(255) NOT NULL
 );
 
 -- create book_author
@@ -43,13 +43,13 @@ CREATE TABLE book_author (
 
 -- create country
 CREATE TABLE country (
-    country_id INT PRIMARY KEY,
+    country_id INT PRIMARY KEY AUTO_INCREMENT,
     country_name VARCHAR(100)
 );
 
 -- create address
 CREATE TABLE address (
-    address_id INT PRIMARY KEY,
+    address_id INT PRIMARY KEY AUTO_INCREMENT,
     city VARCHAR(100),
     postal_code VARCHAR(20),
     country_id INT,
@@ -58,13 +58,13 @@ CREATE TABLE address (
 
 -- create address status
 CREATE TABLE address_status (
-    status_id INT PRIMARY KEY,
+    status_id INT PRIMARY KEY AUTO_INCREMENT,
     status_name VARCHAR(50)
 );
 
--- create cuatomer
+-- create customer
 CREATE TABLE customer (
-    customer_id INT PRIMARY KEY,
+    customer_id INT PRIMARY KEY AUTO_INCREMENT,
     first_name VARCHAR(50),
     last_name VARCHAR(50),
     email VARCHAR(100) UNIQUE,
@@ -82,7 +82,7 @@ CREATE TABLE customer_address (
     FOREIGN KEY (status_id) REFERENCES address_status(status_id)
 );
 
--- creating order status
+-- create order status
 CREATE TABLE order_status (
     status_id INT PRIMARY KEY,
     status_name VARCHAR(50)
@@ -141,7 +141,7 @@ INSERT INTO author (name) VALUES
  ('J.R.R. Tolkien');
 
 INSERT INTO book (title, language_id, publisher_id, price, stock) VALUES
- ('Harry Potter and the Sorcerer\'s Stone', 1, 1, 19.99, 100),
+ (Harry Potter and the Sorcerer\'s Stone', 1, 1, 19.99, 100),
  ('A Game of Thrones', 1, 2, 29.99, 50),
  ('The Hobbit', 1, 3, 15.99, 75);
 
