@@ -2,6 +2,18 @@
 CREATE DATABASE IF NOT EXISTS bookstore;
 USE bookstore;
 
+-- create book  languages
+CREATE TABLE book_language (
+    language_id INT PRIMARY KEY AUTO_INCREMENT,
+    language_name VARCHAR(100)
+);
+
+-- create publishers table
+CREATE TABLE publisher (
+    publisher_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255)
+);
+
 -- creating book table
 CREATE TABLE book (
     book_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -14,11 +26,13 @@ CREATE TABLE book (
     FOREIGN KEY (publisher_id) REFERENCES publisher(publisher_id)
 );
 
+-- create author
 CREATE TABLE author (
     author_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL
 );
 
+-- create book_author
 CREATE TABLE book_author (
     book_id INT,
     author_id INT,
@@ -27,22 +41,13 @@ CREATE TABLE book_author (
     FOREIGN KEY (author_id) REFERENCES author(author_id)
 );
 
-CREATE TABLE book_language (
-    language_id INT PRIMARY KEY AUTO_INCREMENT,
-    language_name VARCHAR(100)
-);
-
-CREATE TABLE publisher (
-    publisher_id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(255)
-);
-
-
+-- create country
 CREATE TABLE country (
     country_id INT PRIMARY KEY,
     country_name VARCHAR(100)
 );
 
+-- create address
 CREATE TABLE address (
     address_id INT PRIMARY KEY,
     city VARCHAR(100),
@@ -51,11 +56,13 @@ CREATE TABLE address (
     FOREIGN KEY (country_id) REFERENCES country(country_id)
 );
 
+-- create address status
 CREATE TABLE address_status (
     status_id INT PRIMARY KEY,
     status_name VARCHAR(50)
 );
 
+-- create cuatomer
 CREATE TABLE customer (
     customer_id INT PRIMARY KEY,
     first_name VARCHAR(50),
@@ -64,6 +71,7 @@ CREATE TABLE customer (
     phone VARCHAR(20)
 );
 
+-- create customer address
 CREATE TABLE customer_address (
     customer_id INT,
     address_id INT,
@@ -74,27 +82,30 @@ CREATE TABLE customer_address (
     FOREIGN KEY (status_id) REFERENCES address_status(status_id)
 );
 
--- creating order tables
-CREATE TABLE cust_order (
-    order_id INT PRIMARY KEY AUTO_INCREMENT,
-    customer_id INT,
-    order_date DATETIME,
-    status_id VARCHAR(50),
-    FOREIGN KEY (customer_id) REFERENCES customer(customer_id)
-    FOREIGN KEY (status_id) REFERENCES order_status(status_id)
-);
-
+-- creating order status
 CREATE TABLE order_status (
     status_id INT PRIMARY KEY,
     status_name VARCHAR(50)
 );
 
+-- create shipping method
 CREATE TABLE shipping_method (
     method_id INT PRIMARY KEY,
     method_name VARCHAR(50),
     shipping_cost DECIMAL(10,2)
 );
 
+-- create customer order
+CREATE TABLE cust_order (
+    order_id INT PRIMARY KEY AUTO_INCREMENT,
+    customer_id INT,
+    order_date DATETIME,
+    status_id INT,
+    FOREIGN KEY (customer_id) REFERENCES customer(customer_id),
+    FOREIGN KEY (status_id) REFERENCES order_status(status_id)
+);
+
+-- create order history
 CREATE TABLE order_history(
     order_history_id INT PRIMARY KEY AUTO_INCREMENT,
     order_id INT,
@@ -104,6 +115,7 @@ CREATE TABLE order_history(
     FOREIGN KEY (status_id) REFERENCES order_status(status_id)
 );
 
+--creater order_line
 CREATE TABLE order_line(
     order_line_id INT PRIMARY KEY AUTO_INCREMENT,
     order_id INT,
@@ -184,19 +196,17 @@ INSERT INTO order_status (status_id, status_name) VALUES
 (1, 'Pending'),
 (2, 'Shipped'),
 (3, 'Delivered'),
-(4, 'Cancelled');
-(5, 'Returned');
-(6, 'Refunded');
-(7, 'Processing');
+(4, 'Cancelled'),
+(5, 'Returned'),
+(6, 'Refunded'),
+(7, 'Processing'),
 (8, 'On Hold');
- );
 
 -- Insert into shipping_method
 INSERT INTO shipping_method (method_id, method_name, shipping_cost) VALUES
 (1, 'Standard Shipping', 5.00),
 (2, 'Express Shipping', 15.00),
 (3, 'Overnight Shipping', 25.00);
- );
 
 -- Insert into cust_order
 INSERT INTO cust_order (customer_id, order_date, status_id) VALUES
@@ -205,7 +215,6 @@ INSERT INTO cust_order (customer_id, order_date, status_id) VALUES
 (3, '2023-10-03 12:45:00', 3),
 (4, '2023-10-04 14:15:00', 4),
 (5, '2023-10-05 15:30:00', 5);
- );
 
 -- Insert into order_history
 INSERT INTO order_history (order_id, status_id, change_date) VALUES
@@ -214,13 +223,9 @@ INSERT INTO order_history (order_id, status_id, change_date) VALUES
 (3, 3, '2023-10-03 12:45:00'),
 (4, 4, '2023-10-04 14:15:00'),
 (5, 5, '2023-10-05 15:30:00');
- );
 
 -- Insert into order_line
 INSERT INTO order_line (order_id, book_id, quantity, price) VALUES
 (1, 1, 2, 39.98),
 (2, 2, 1, 29.99),
-(3, 3, 3, 47.97),
-(4, 4, 1, 15.99),
-(5, 5, 2, 59.98);
- );
+(3, 3, 3, 47.97);
